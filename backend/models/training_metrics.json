@@ -1,0 +1,30 @@
+{
+  "crop": {
+    "accuracy": 0.9932,
+    "cross_validation": "0.9964 \u00b1 0.0011",
+    "dataset_size": 2200,
+    "num_crops": 6
+  },
+  "fertilizer": {
+    "accuracy": 0.0476,
+    "cross_validation": "0.1238 \u00b1 0.0486",
+    "dataset_size": 105,
+    "num_fertilizers": 7,
+    "class_distribution": {
+      "Organic": 19,
+      "NPK": 17,
+      "DAP": 16,
+      "Urea": 15,
+      "MOP": 14,
+      "Potash": 14,
+      "SSP": 10
+    }
+  },
+  "soil": {
+    "accuracy": 0.0,
+    "cross_validation": "0.1800 \u00b1 0.1166",
+    "dataset_size": 50,
+    "target_variable": "recommendation",
+    "num_classes": 6
+  }
+}

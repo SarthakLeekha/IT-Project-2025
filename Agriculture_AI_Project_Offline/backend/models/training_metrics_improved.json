@@ -1,0 +1,18 @@
+{
+  "fertilizer": {
+    "accuracy": 0.5930735930735931,
+    "cross_validation": "0.5931 \u00b1 0.0920",
+    "dataset_size": 133,
+    "num_fertilizers": 7,
+    "class_distribution": {
+      "DAP": 19,
+      "MOP": 19,
+      "NPK": 19,
+      "Organic": 19,
+      "Potash": 19,
+      "SSP": 19,
+      "Urea": 19
+    },
+    "improvements": "Balanced dataset, additional features, hyperparameter tuning"
+  }
+}
