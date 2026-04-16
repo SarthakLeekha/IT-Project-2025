@@ -16,11 +16,11 @@ class Auth {
                 this.user = res.user;
                 return { success: true };
             } else {
-                return { success: false, message: res.message || 'Login failed' };
+                return { success: false };
             }
 
-        } catch (error) {
-            return { success: false, message: 'Login failed' };
+        } catch {
+            return { success: false };
         }
     }
 
@@ -37,12 +37,6 @@ class Auth {
 
     isAuthenticated() {
         return !!localStorage.getItem('token');
-    }
-
-    requireAuth() {
-        if (!this.isAuthenticated()) {
-            window.location.reload();
-        }
     }
 }
 
