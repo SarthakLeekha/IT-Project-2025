@@ -1113,7 +1113,9 @@
             const data = Object.fromEntries(formData);
 
             try {
-                const result = await apiCall('/api/weather', {
+                const result = await apiCall(
+    `/api/weather/current?location=${encodeURIComponent(data.location)}`
+, {
                     method: 'POST',
                     body: JSON.stringify({ location: data.location })
                 });
