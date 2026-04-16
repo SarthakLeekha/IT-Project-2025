@@ -776,6 +776,7 @@ if (!response.ok) {
 }
 
 const health = await response.json();
+        console.log('Health response:', health);
 
         connectionDetails.innerHTML = `
             <div class="flex items-center">
