@@ -816,8 +816,10 @@ async function checkBackendConnection() {
 }
 
 async function apiCall(endpoint, options = {}) {
-    const baseURL = 'https://it-project-2025-vkfb.onrender.com';
-    const url = `${baseURL}${endpoint}`;
+const isProd = window.location.host.includes('render.com') || window.location.host.includes('onrender.com');
+const baseURL = isProd ? '' : 'http://localhost:5000';
+const apiBase = `${baseURL}/api`;
+const url = `${apiBase}${endpoint}`;
 
     const defaultOptions = {
         headers: {
