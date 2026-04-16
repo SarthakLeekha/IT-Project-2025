@@ -53,15 +53,18 @@ class API {
     }
 
     async checkBackendConnection() {
-        try {
-            const res = await fetch(`${this.baseURL}/api/health`);
-            if (!res.ok) throw new Error();
-            return { connected: true };
-        } catch {
-            return { connected: false };
-        }
-    }
+    try {
+        const res = await fetch(`${this.baseURL}/api/health`);
+        const data = await res.json();
 
+        return {
+            connected: true,
+            models: data.available_models || []
+        };
+    } catch {
+        return { connected: false, models: [] };
+    }
+}
     async login(data) {
         return await this.makeRequest('/api/login', {
             method: 'POST',
