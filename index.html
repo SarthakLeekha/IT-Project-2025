@@ -815,30 +815,9 @@ async function checkBackendConnection() {
             }
         }, 3000);
     }
-
-       async function apiCall(endpoint, options = {}) {
-    const baseURL = 'https://it-project-2025-vkfb.onrender.com';
-    const url = `${baseURL}${endpoint}`;
-    
-    const defaultOptions = {
-        headers: {
-            'Content-Type': 'application/json',
-        }
-    };
-
-   const token = localStorage.getItem('token');
-
-if (token) {
-    defaultOptions.headers['Authorization'] = `Bearer ${token}`;
-}
-    const finalOptions = { ...defaultOptions, ...options };
-
+async function apiCall(endpoint, options = {}) {
     try {
-        const response = await fetch(url, finalOptions);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return await response.json();
+        return await API.makeRequest(endpoint, options);
     } catch (error) {
         console.error(`API call failed for ${endpoint}:`, error);
         throw error;
