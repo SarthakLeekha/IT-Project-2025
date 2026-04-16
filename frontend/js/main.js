@@ -69,7 +69,7 @@ class App {
                         <span>Connected to backend</span>
                     </div>
                     <div class="text-green-600 text-xs mt-1">
-                        Models: ${connectionResult.models.join(', ')}
+                       Models: ${connectionResult.models?.join(', ') || 'Available'}
                     </div>
                 `;
 
