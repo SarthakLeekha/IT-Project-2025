@@ -16,10 +16,13 @@ class API {
             return Utils.mockApiCall(endpoint, options.body);
         }
 
+        const token = localStorage.getItem('token');
+
         const config = {
             method: options.method || 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                ...(token && { 'Authorization': `Bearer ${token}` })
             },
             ...options
         };
@@ -29,15 +32,22 @@ class API {
         }
 
         try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+            config.signal = controller.signal;
+
             const response = await fetch(url, config);
+            clearTimeout(timeoutId);
 
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
             }
 
-            return await response.json();
+            const data = await response.json();
+            return data;
 
         } catch (error) {
+            console.error('API error:', error);
             this.useMockData = true;
             return Utils.mockApiCall(endpoint, options.body);
         }
@@ -76,7 +86,9 @@ class API {
     }
 
     async getCurrentWeather(location = 'Pune') {
-        return await this.makeRequest(`/api/weather/current?location=${encodeURIComponent(location)}`);
+        return await this.makeRequest(
+            `/api/weather/current?location=${encodeURIComponent(location)}`
+        );
     }
 }
 
