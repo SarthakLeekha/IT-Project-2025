@@ -55,42 +55,40 @@ class API {
             const response = await this.makeRequest('/api/health');
             return {
                 connected: true,
-                status: response.status
+                status: response.status,
+                models: response.available_models || []
             };
         } catch (error) {
             return {
-                connected: false
+                connected: false,
+                message: 'Using demo mode'
             };
         }
     }
 
     async predictCrop(data) {
-        const res = await this.makeRequest('/api/crop', {
+        return await this.makeRequest('/api/crop', {
             method: 'POST',
             body: data
         });
-        return { success: true, data: res.data };
     }
 
     async predictFertilizer(data) {
-        const res = await this.makeRequest('/api/fertilizer', {
+        return await this.makeRequest('/api/fertilizer', {
             method: 'POST',
             body: data
         });
-        return { success: true, data: res.data };
     }
 
     async analyzeSoil(data) {
-        const res = await this.makeRequest('/api/soil', {
+        return await this.makeRequest('/api/soil', {
             method: 'POST',
             body: data
         });
-        return { success: true, data: res.data };
     }
 
     async getCurrentWeather(location = 'Pune') {
-        const res = await this.makeRequest(`/api/weather?location=${encodeURIComponent(location)}`);
-        return { success: true, data: res.data };
+        return await this.makeRequest(`/api/weather?location=${encodeURIComponent(location)}`);
     }
 }
 
