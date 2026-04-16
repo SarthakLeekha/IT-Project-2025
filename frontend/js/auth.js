@@ -1,97 +1,49 @@
-class API {
+class Auth {
     constructor() {
-        this.baseURL = 'https://it-project-2025-vkfb.onrender.com';
-        this.timeout = 10000;
-        this.useMockData = false;
+        this.user = this.getUser();
     }
 
-    async makeRequest(endpoint, options = {}) {
-        if (!endpoint.startsWith('/')) {
-            endpoint = '/' + endpoint;
-        }
-
-        const url = this.baseURL + endpoint;
-
-        if (this.useMockData) {
-            return Utils.mockApiCall(endpoint, options.body);
-        }
-
-        const config = {
-            method: options.method || 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            },
-            ...options
-        };
-
-        if (config.method !== 'GET' && options.body) {
-            config.body = JSON.stringify(options.body);
-        }
-
+    async login(username, password) {
         try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-            config.signal = controller.signal;
+            const res = await API.login({
+                username: username,
+                password: password
+            });
 
-            const response = await fetch(url, config);
-            clearTimeout(timeoutId);
-
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
+            if (res.status === 'success') {
+                localStorage.setItem('user', JSON.stringify(res.user));
+                localStorage.setItem('token', res.token);
+                this.user = res.user;
+                return { success: true };
+            } else {
+                return { success: false, message: res.message || 'Login failed' };
             }
 
-            const data = await response.json();
-            return data;
-
         } catch (error) {
-            this.useMockData = true;
-            return Utils.mockApiCall(endpoint, options.body);
+            return { success: false, message: 'Login failed' };
         }
     }
 
-    async checkBackendConnection() {
-        try {
-            const response = await this.makeRequest('/api/health');
-            return {
-                connected: true,
-                status: response.status
-            };
-        } catch (error) {
-            return {
-                connected: false
-            };
+    logout() {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        this.user = null;
+    }
+
+    getUser() {
+        const user = localStorage.getItem('user');
+        return user ? JSON.parse(user) : null;
+    }
+
+    isAuthenticated() {
+        return !!localStorage.getItem('token');
+    }
+
+    requireAuth() {
+        if (!this.isAuthenticated()) {
+            window.location.reload();
         }
-    }
-
-    async predictCrop(data) {
-        const res = await this.makeRequest('/api/crop', {
-            method: 'POST',
-            body: data
-        });
-        return res;
-    }
-
-    async predictFertilizer(data) {
-        const res = await this.makeRequest('/api/fertilizer', {
-            method: 'POST',
-            body: data
-        });
-        return res;
-    }
-
-    async analyzeSoil(data) {
-        const res = await this.makeRequest('/api/soil', {
-            method: 'POST',
-            body: data
-        });
-        return res;
-    }
-
-    async getCurrentWeather(location = 'Pune') {
-        const res = await this.makeRequest(`/api/weather?location=${encodeURIComponent(location)}`);
-        return res;
     }
 }
 
-window.API = new API();
+window.Auth = new Auth();
