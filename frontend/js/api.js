@@ -19,8 +19,7 @@ class API {
         const config = {
             method: options.method || 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
+                'Content-Type': 'application/json'
             },
             ...options
         };
@@ -30,19 +29,13 @@ class API {
         }
 
         try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-            config.signal = controller.signal;
-
             const response = await fetch(url, config);
-            clearTimeout(timeoutId);
 
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
             }
 
-            const data = await response.json();
-            return data;
+            return await response.json();
 
         } catch (error) {
             this.useMockData = true;
@@ -51,44 +44,39 @@ class API {
     }
 
     async checkBackendConnection() {
-        try {
-            const response = await this.makeRequest('/api/health');
-            return {
-                connected: true,
-                status: response.status,
-                models: response.available_models || []
-            };
-        } catch (error) {
-            return {
-                connected: false,
-                message: 'Using demo mode'
-            };
-        }
+        return await this.makeRequest('/api/health');
+    }
+
+    async login(data) {
+        return await this.makeRequest('/api/login', {
+            method: 'POST',
+            body: data
+        });
     }
 
     async predictCrop(data) {
-        return await this.makeRequest('/api/crop', {
+        return await this.makeRequest('/api/crop/recommend', {
             method: 'POST',
             body: data
         });
     }
 
     async predictFertilizer(data) {
-        return await this.makeRequest('/api/fertilizer', {
+        return await this.makeRequest('/api/fertilizer/recommend', {
             method: 'POST',
             body: data
         });
     }
 
     async analyzeSoil(data) {
-        return await this.makeRequest('/api/soil', {
+        return await this.makeRequest('/api/soil/analyze', {
             method: 'POST',
             body: data
         });
     }
 
     async getCurrentWeather(location = 'Pune') {
-        return await this.makeRequest(`/api/weather?location=${encodeURIComponent(location)}`);
+        return await this.makeRequest(`/api/weather/current?location=${encodeURIComponent(location)}`);
     }
 }
 
