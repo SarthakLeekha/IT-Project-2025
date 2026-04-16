@@ -43,18 +43,23 @@ class API {
                 throw new Error(`HTTP ${response.status}`);
             }
 
-            const data = await response.json();
-            return data;
+            return await response.json();
 
         } catch (error) {
-            console.error('API error:', error);
+            console.error(error);
             this.useMockData = true;
             return Utils.mockApiCall(endpoint, options.body);
         }
     }
 
     async checkBackendConnection() {
-        return await this.makeRequest('/api/health');
+        try {
+            const res = await fetch(`${this.baseURL}/api/health`);
+            if (!res.ok) throw new Error();
+            return { connected: true };
+        } catch {
+            return { connected: false };
+        }
     }
 
     async login(data) {
