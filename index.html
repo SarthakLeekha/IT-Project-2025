@@ -792,36 +792,34 @@
             }
         }
 
-        async function apiCall(endpoint, options = {}) {
-            // Use backend service name for Docker networking, fallback to localhost for development
-            const baseURL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                ? 'http://127.0.0.1:5000'
-                : 'http://backend:5000';
-            const url = `${baseURL}${endpoint}`;
-            
-            const defaultOptions = {
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            };
-
-            if (authToken) {
-                defaultOptions.headers['Authorization'] = `Bearer ${authToken}`;
-            }
-
-            const finalOptions = { ...defaultOptions, ...options };
-
-            try {
-                const response = await fetch(url, finalOptions);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return await response.json();
-            } catch (error) {
-                console.error(`API call failed for ${endpoint}:`, error);
-                throw error;
-            }
+       async function apiCall(endpoint, options = {}) {
+    const baseURL = 'https://it-project-2025-vkfb.onrender.com';
+    const url = `${baseURL}${endpoint}`;
+    
+    const defaultOptions = {
+        headers: {
+            'Content-Type': 'application/json',
         }
+    };
+
+    if (authToken) {
+        defaultOptions.headers['Authorization'] = `Bearer ${authToken}`;
+    }
+
+    const finalOptions = { ...defaultOptions, ...options };
+
+    try {
+        const response = await fetch(url, finalOptions);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error(`API call failed for ${endpoint}:`, error);
+        throw error;
+    }
+}
+        
 
         function showNotification(message, type = 'success') {
             const notification = document.getElementById('notification');
